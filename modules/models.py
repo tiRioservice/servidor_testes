@@ -42,19 +42,19 @@ class Colaborador(DBase):
      colab_rg: Mapped[str] = mapped_column(String(9), nullable=True)
      colab_est_civil: Mapped[str] = mapped_column(String(15), nullable=True)
      colab_naturalidade: Mapped[str] = mapped_column(String(30), nullable=True)
-     end_id: Mapped[Optional[int]]
      colab_fone: Mapped[str] = mapped_column(String(13), nullable=True)
      colab_celular: Mapped[str] = mapped_column(String(14), nullable=True)
      colab_escolaridade: Mapped[str] = mapped_column(String(50), nullable=True)
-     cargo_id: Mapped[Optional[int]]
      colab_admissao: Mapped[Optional[datetime.date]]
      colab_email: Mapped[str] = mapped_column(String(100), nullable=True)
      colab_centro_custo: Mapped[str] = mapped_column(String(100), nullable=True)
      colab_salario: Mapped[Optional[float]]
      colab_status: Mapped[bool]
-     base_id: Mapped[Optional[int]]
      colab_login: Mapped[str] = mapped_column(String(50), nullable=False)
      colab_password: Mapped[str] = mapped_column(String(100), nullable=True)
+     end_id: Mapped[Optional[int]]
+     cargo_id: Mapped[Optional[int]]
+     base_id: Mapped[Optional[int]]
 
      def __init__(self, colab_matricula:int, colab_nome:str, colab_cpf:str, colab_login:str, colab_password:str):
           self.colab_matricula = colab_matricula

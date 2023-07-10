@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import text
 from modules.connection import engine
-from modules.models import Colaborador
+from modules.models import Colaborador, generate_pass
 from sqlalchemy.orm import sessionmaker
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
@@ -132,7 +132,26 @@ def update_colaborador():
         session.query(Colaborador).filter(Colaborador.colab_id == data['colab_id']).update(data)
         session.commit()
         return jsonify({"msg":"Colaborador atualizado com sucesso!"})
-    
+
+# Updadate pass ok
+@colaboradores_bp.post("/trocar_senha")
+@jwt_required()
+def update_pass_colaborador():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    required_fields = ['colab_id', 'colab_password']
+
+    print(">>>>>>> TEST: ", data)
+
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+
+    with Session() as session:
+        session.query(Colaborador).filter(Colaborador.colab_id == data['colab_id']).update({"colab_password":generate_pass(data['colab_password'])})
+        session.commit()
+        return jsonify({"msg":"Senha atualizada!"})
+
 # Remove ok
 @colaboradores_bp.post("/remover")
 @jwt_required()

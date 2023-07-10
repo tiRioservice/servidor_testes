@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 application = create_app(False)
 
-application.route('/')(lambda: 'API running...')
+application.route('/')(lambda: 'API da Rio Service!')
 
 if __name__ == "__main__":
     application.run()

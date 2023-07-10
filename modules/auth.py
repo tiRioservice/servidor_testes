@@ -103,5 +103,7 @@ def signup():
 @jwt_required()
 def logout():
     current_user = get_jwt_identity()
-    unset_jwt_cookies(current_user)
-    return current_user
+    response = jsonify({"msg":"Deslogado com sucesso!"})
+    unset_jwt_cookies(response)
+    print(">>>> Response: ", response)
+    return response
