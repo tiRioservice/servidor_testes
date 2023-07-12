@@ -47,7 +47,7 @@ def get_cargos():
         for row in result:
             cargo_composition = {
                 "cargo_id":row.cargo_id,
-                "cargo_name":row.cargo_nome,
+                "cargo_nome":row.cargo_nome,
                 "cargo_desc":row.cargo_desc
             }
             cargo_list.append(cargo_composition)

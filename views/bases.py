@@ -46,7 +46,7 @@ def get_bases():
         for row in result:
             base_composition = {
                 "base_id":row.base_id,
-                "base_name":row.base_nome,
+                "base_nome":row.base_nome,
                 "base_desc":row.base_desc
             }
             base_list.append(base_composition)

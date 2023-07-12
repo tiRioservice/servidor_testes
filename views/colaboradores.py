@@ -120,11 +120,16 @@ def get_colaborador():
 
 # Update ok
 @colaboradores_bp.post("/atualizar")
-@jwt_required()
+# @jwt_required()
 def update_colaborador():
-    current_user = get_jwt_identity()
+    # current_user = get_jwt_identity()
     data = request.get_json()
-    required_fields = ['colab_id', 'colab_matricula', 'colab_nome', 'colab_cpf', 'colab_login']
+    required_fields = ['colab_id']
+    optional_fields = ['colab_matricula', 'colab_nome', 'colab_nascimento', 'colab_cpf', 'colab_rg', 'colab_est_civil', 'colab_naturalidade', 'colab_fone', 'colab_celular', 'colab_escolaridade', 'colab_admissao', 'colab_email', 'colab_centro_custo', 'colab_salario', 'colab_status', 'end_id', 'cargo_id', 'base_id']
+
+    for field in data:
+        if not field in optional_fields:
+            return jsonify({"msg":f"Chave '{field}' não encontrada."})
 
     for field in required_fields:
         if not field in data:
