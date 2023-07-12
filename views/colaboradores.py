@@ -53,18 +53,20 @@ def get_colaboradores():
                 "colab_rg":row[6],
                 "colab_est_civil":row[7],
                 "colab_naturalidade":row[8],
-                "end_id":row[9],
-                "colab_fone":row[10],
-                "colab_celular":row[11],
-                "colab_escolaridade":row[12],
-                "cargo_id":row[13],
-                "colab_admissao":row[15],
-                "colab_email":row[16],
-                "colab_centro_custo":row[17],
-                "colab_salario":row[18],
-                "colab_status":row[19],
-                "base_id":row[20],
+                "colab_fone":row[9],
+                "colab_celular":row[10],
+                "colab_escolaridade":row[11],
+                "colab_admissao":row[12],
+                "colab_email":row[13],
+                "colab_centro_custo":row[14],
+                "colab_salario":row[15],
+                "colab_status":row[16],
+                "end_id":row[19],
+                "cargo_id":row[20],
+                "base_id":row[21],
             }
+
+            print("COMP => ", user_composition)
             user_list.append(user_composition)
 
     if user_list == []:

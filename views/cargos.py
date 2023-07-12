@@ -77,7 +77,7 @@ def get_cargo():
         
         cargo_composition = {
             "cargo_id":result.cargo_id,
-            "cargo_name":result.cargo_nome,
+            "cargo_nome":result.cargo_nome,
             "cargo_desc":result.cargo_desc
         }
 

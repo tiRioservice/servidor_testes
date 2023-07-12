@@ -56,12 +56,13 @@ class Colaborador(DBase):
      cargo_id: Mapped[Optional[int]]
      base_id: Mapped[Optional[int]]
 
-     def __init__(self, colab_matricula:int, colab_nome:str, colab_cpf:str, colab_login:str, colab_password:str):
+     def __init__(self, colab_matricula:int, colab_nome:str, colab_cpf:str, colab_login:str, colab_password:str, end_id:int):
           self.colab_matricula = colab_matricula
           self.colab_nome = colab_nome
           self.colab_cpf = colab_cpf
           self.colab_login = colab_login
           self.colab_password = self.__generate_hash(colab_password)
+          self.end_id = end_id
           self.colab_status = False
 
      def __repr__(self) -> str:

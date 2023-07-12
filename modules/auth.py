@@ -77,27 +77,46 @@ def login():
 
 @auth_bp.post('/signup')
 def signup():
-    json = request.get_json()
-    if not 'data' in json:
-        return jsonify({"msg":"Insira uma chave 'data' e atribua um objeto json."})
-    else: 
-        if not type(json['data']) == type(json):
-            return jsonify({"msg":"A chave data deve ser um objeto Json com as colunas do banco como chaves."})
-        else:
-            if json['data'] == {}:
-                return jsonify({"msg":"As chaves devem ser as colunas do banco de dados."})
-            else:
-                data = json['data']
-                with Session() as session:
-                    colaborador = Colaborador(**data)
-                    result = session.add(colaborador)
-                    session.commit()
+    data = request.get_json()
+    required_fields = ['colab_matricula', 'colab_nome', 'colab_cpf', 'colab_login', 'colab_password', 'end_id']
 
-                    return jsonify({
-                        "msg":"Usuário inserido com sucesso!",
-                        "colab_inserted":True,
-                        "new_colab_id": result
-                    })
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+    
+    if data == {}:
+        return jsonify({"msg":"Insira os dados do novo colaborador a ser cadastrado."})
+    else:
+        with Session() as session:
+            colaborador = Colaborador(**data)
+            result = session.add(colaborador)
+            session.commit()
+
+            return jsonify({
+                "msg":"Usuário inserido com sucesso!",
+                "colab_inserted":True,
+                "new_colab_id": result
+            })
+    # if not 'data' in json:
+    #     return jsonify({"msg":"Insira uma chave 'data' e atribua um objeto json."})
+    # else: 
+    #     if not type(json['data']) == type(json):
+    #         return jsonify({"msg":"A chave data deve ser um objeto Json com as colunas do banco como chaves."})
+    #     else:
+    #         if json['data'] == {}:
+    #             return jsonify({"msg":"As chaves devem ser as colunas do banco de dados."})
+    #         else:
+    #             data = json['data']
+    #             with Session() as session:
+    #                 colaborador = Colaborador(**data)
+    #                 result = session.add(colaborador)
+    #                 session.commit()
+
+    #                 return jsonify({
+    #                     "msg":"Usuário inserido com sucesso!",
+    #                     "colab_inserted":True,
+    #                     "new_colab_id": result
+    #                 })
 
 @auth_bp.post('/logout')
 @jwt_required()
