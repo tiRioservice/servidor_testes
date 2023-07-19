@@ -71,7 +71,7 @@ def get_enderecos():
     })
 
 # Read ok
-@enderecos_bp.get("/buscar")
+@enderecos_bp.post("/buscar")
 @jwt_required()
 def get_endereco():
     current_user = get_jwt_identity()
@@ -88,6 +88,7 @@ def get_endereco():
     with Session() as session:
         endereco = session.query(Endereco).filter_by(end_id=data['end_id']).first()
         endereco_composition = {
+            "registro":endereco.registro,
             "end_id":endereco.end_id,
             "end_tipo":endereco.end_tipo,
             "end_cep":endereco.end_cep,
@@ -100,9 +101,37 @@ def get_endereco():
         }
 
         return jsonify({
-            "method":"GET",
+            "method":"POST",
             "acao":f"Buscar o endereco de ID {data['end_id']}.",
             "endereco":endereco_composition,
+            "current_user":current_user
+        })
+    
+# Read ok
+@enderecos_bp.post("/buscar_id")
+@jwt_required()
+def get_endereco_id():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    required_fields = ['end_tipo', 'end_cep', 'end_numero']
+
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+        
+    if data == {}:
+        return jsonify({"msg":"Insira os dados do endereco a ser buscado."})
+    
+    with Session() as session:
+        endereco = session.query(Endereco).filter_by(end_tipo=data["end_tipo"], end_cep=data["end_cep"], end_numero=data["end_numero"]).one_or_none()
+        endereco_composition = {
+            "end_id":endereco.end_id
+        }
+
+        return jsonify({
+            "method":"GET",
+            "acao":f"Buscar o ID do endereco de cep {data['end_cep']} e numero {data['end_numero']}.",
+            "end_id":endereco_composition['end_id'],
             "current_user":current_user
         })
 

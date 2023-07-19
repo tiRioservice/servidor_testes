@@ -14,7 +14,7 @@ Session = sessionmaker(bind=engine)
 def insert_base():
     current_user = get_jwt_identity()
     data = request.get_json()
-    required_fields = ['base_nome','base_desc']
+    required_fields = ['base_nome','base_desc', "end_id"]
 
     for field in required_fields:
         if not field in data:
@@ -25,13 +25,13 @@ def insert_base():
     else:
         with Session() as session:
             base = Base(**data)
-            result = session.add(base)
+            session.add(base)
             session.commit()
 
             return jsonify({
                 "msg":"Base inserida com sucesso!",
                 "base_inserted":True,
-                "new_base_id": result,
+                "new_base_id": base.base_id,
                 "current_user":current_user
             })
 
@@ -45,9 +45,11 @@ def get_bases():
         result = session.query(Base).all()
         for row in result:
             base_composition = {
+                "registro":row.registro,
                 "base_id":row.base_id,
                 "base_nome":row.base_nome,
-                "base_desc":row.base_desc
+                "base_desc":row.base_desc,
+                "end_id":row.end_id
             }
             base_list.append(base_composition)
 

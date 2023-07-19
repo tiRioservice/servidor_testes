@@ -13,9 +13,11 @@ reg = registry()
 class Base(DBase):
      __tablename__ = 'tb_bases'
 
+     registro = Column(DateTime(timezone=True), server_default=func.now())
      base_id: Mapped[int] = mapped_column(primary_key=True)
      base_nome: Mapped[str] = mapped_column(String(30), nullable=False)
      base_desc: Mapped[str] = mapped_column(String(300))
+     end_id: Mapped[Optional[int]]
 
      def __repr__(self) -> str:
           return f"Base -> (base_id={self.base_id!r}, base_nome={self.base_nome!r}, base_desc={self.base_desc!r})"
@@ -23,6 +25,7 @@ class Base(DBase):
 class Cargo(DBase):
      __tablename__ = 'tb_cargos'
 
+     registro = Column(DateTime(timezone=True), server_default=func.now())
      cargo_id: Mapped[int] = mapped_column(primary_key=True)
      cargo_nome: Mapped[str] = mapped_column(String(30), nullable=False)
      cargo_desc: Mapped[str] = mapped_column(String(300))
@@ -74,6 +77,7 @@ class Colaborador(DBase):
 class Endereco(DBase):
      __tablename__ = 'tb_enderecos'
 
+     registro = Column(DateTime(timezone=True), server_default=func.now())
      end_id: Mapped[int] = mapped_column(primary_key=True)
      end_tipo: Mapped[str] = mapped_column(String(1), nullable=False)
      end_cep: Mapped[Optional[int]]

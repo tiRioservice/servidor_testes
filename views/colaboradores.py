@@ -14,7 +14,7 @@ Session = sessionmaker(bind=engine)
 def insert_colaborador():
     current_user = get_jwt_identity()
     data = request.get_json()
-    required_fields = ['colab_matricula', 'colab_nome', 'colab_cpf', 'colab_login', 'colab_password']
+    required_fields = ['colab_matricula', 'colab_nome', 'colab_cpf', 'colab_login', 'colab_password', 'end_id']
     for field in required_fields:
         if not field in data:
             return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
@@ -24,13 +24,13 @@ def insert_colaborador():
     else:
         with Session() as session:
             colaborador = Colaborador(**data)
-            result = session.add(colaborador)
+            session.add(colaborador)
             session.commit()
 
             return jsonify({
                 "msg":"Usuário inserido com sucesso!",
                 "colab_inserted":True,
-                "new_colab_id": result,
+                "new_colab_id": colaborador.colab_id,
                 "current_user":current_user
             })
         

@@ -46,6 +46,7 @@ def get_cargos():
         result = session.query(Cargo).all()
         for row in result:
             cargo_composition = {
+                "registro":row.registro,
                 "cargo_id":row.cargo_id,
                 "cargo_nome":row.cargo_nome,
                 "cargo_desc":row.cargo_desc
