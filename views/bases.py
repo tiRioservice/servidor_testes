@@ -14,7 +14,7 @@ Session = sessionmaker(bind=engine)
 def insert_base():
     current_user = get_jwt_identity()
     data = request.get_json()
-    required_fields = ['base_nome','base_desc', "end_id"]
+    required_fields = ['base_nome','base_desc', 'end_id']
 
     for field in required_fields:
         if not field in data:
@@ -69,17 +69,23 @@ def get_bases():
 def get_base():
     current_user = get_jwt_identity()
     data = request.get_json()
+    required_fields = ["base_id"]
 
-    if not 'base_id' in data:
-        return jsonify({"msg":"Insira a chave 'base_id' e atribua um valor do tipo 'int'."})
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+    
+    if data == {}:
+        return jsonify({"msg":"Insira os dados da base a ser buscada."})
     
     with Session() as session:
-        result = session.query(Base).filter(Base.base_id == data['base_id']).first()
+        base = session.query(Base).filter(Base.base_id == data['base_id']).first()
 
         base_composition = {
-            "base_id":result.base_id,
-            "base_name":result.base_nome,
-            "base_desc":result.base_desc
+            "base_id":base.base_id,
+            "base_name":base.base_nome,
+            "base_desc":base.base_desc,
+            "end_id":base.end_id
         }
 
         return jsonify({
@@ -137,5 +143,6 @@ def remove_base():
         return jsonify({
             "method":"POST",
             "acao":f"Remover a base de ID {data['base_id']}.",
-            "current_user":current_user
+            "current_user":current_user,
+            "msg":"Base removida com sucesso!"
         })

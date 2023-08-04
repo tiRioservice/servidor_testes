@@ -85,14 +85,19 @@ def get_colaboradores():
 def get_colaborador():
     current_user = get_jwt_identity()
     data = request.get_json()
+    required_fields = ['colab_id']
 
-    if not 'colab_id' in data:
-        return jsonify({"msg":"Insira uma chave 'colab_id' e atribua um valor do tipo 'int'."})
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
     
+    if data == {}:
+        return jsonify({"msg":"Insira os dados do colaborador a ser buscado."})
+
     with Session() as session:
         result = session.query(Colaborador).where(Colaborador.colab_id == data['colab_id']).one()
         if data['colab_id'] == result.colab_id:
-            user_composition = {
+            colab_composition = {
                 "registro":result.registro,
                 "colab_id":result.colab_id,
                 "colab_matricula":result.colab_matricula,
@@ -113,11 +118,15 @@ def get_colaborador():
                 "colab_salario":result.colab_salario,
                 "colab_status":result.colab_status,
                 "base_id":result.base_id
-
             }
-            
-            return jsonify(user_composition)
 
+            return jsonify({
+                "method":"GET",
+                "acao":f"Buscar o colaborador de ID {data['colab_id']}.",
+                "data":colab_composition,
+                "current_user":current_user
+            })
+            
 # Update ok
 @colaboradores_bp.post("/atualizar")
 # @jwt_required()
@@ -170,8 +179,17 @@ def remove_colaborador():
     for field in required_fields:
         if not field in data:
             return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+        
+    if data == {}:
+        return jsonify({"msg":"Insira os dados do colaborador a ser removido."})
     
     with Session() as session:
         session.query(Colaborador).filter(Colaborador.colab_id == data['colab_id']).delete()
         session.commit()
-        return jsonify({"msg":"Colaborador removido com sucesso!"})
+        
+        return jsonify({
+            "method":"POST",
+            "acao":f"Remover o colaborador de ID {data['colab_id']}.",
+            "current_user":current_user,
+            "msg":"Colaborador removido com sucesso!"
+        })

@@ -26,13 +26,13 @@ def insert_endereco():
     with Session() as session:
         endereco = Endereco(**data)
         cep = endereco.get_end_from_viacep()
-        result = session.add(endereco)
+        session.add(endereco)
         session.commit()
 
         return jsonify({
             "msg":"Endereco inserido com sucesso!",
             "endereco_inserted":True,
-            "new_end": cep,
+            "new_end": endereco.end_id,
             "current_user":current_user
         })
 
@@ -86,7 +86,7 @@ def get_endereco():
         return jsonify({"msg":"Insira os dados do endereco a ser buscado."})
     
     with Session() as session:
-        endereco = session.query(Endereco).filter_by(end_id=data['end_id']).first()
+        endereco = session.query(Endereco).where(Endereco.end_id == data['end_id']).one()
         endereco_composition = {
             "registro":endereco.registro,
             "end_id":endereco.end_id,
