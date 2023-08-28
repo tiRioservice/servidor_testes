@@ -29,7 +29,7 @@ def insert_base():
             session.commit()
 
             return jsonify({
-                "msg":"Base inserida com sucesso!",
+                "action":"Base inserida com sucesso!",
                 "base_inserted":True,
                 "new_base_id": base.base_id,
                 "current_user":current_user
@@ -58,7 +58,7 @@ def get_bases():
 
     return jsonify({
         "method":"GET",
-        "acao":"Listar todas as bases.",
+        "action":"Listar todas as bases.",
         "data":base_list,
         "current_user":current_user
     })
@@ -90,7 +90,7 @@ def get_base():
 
         return jsonify({
             "method":"GET",
-            "acao":f"Buscar a base de ID {data['base_id']}.",
+            "action":f"Buscar a base de ID {data['base_id']}.",
             "data":base_composition,
             "current_user":current_user
         })
@@ -101,23 +101,27 @@ def get_base():
 def update_base():
     current_user = get_jwt_identity()
     data = request.get_json()
-    required_fields = ['base_id','base_nome','base_desc']
+    required_fields = ['base_id']
+    optional_fields = ['base_nome','base_desc', 'end_id']
+
+    modified_fields = []
     
     for field in required_fields:
         if not field in data:
             return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
-    
-    if data == {}:
-        return jsonify({"msg":"Insira os dados da base a ser atualizada."})
-    
+        else:
+            for field in optional_fields:
+                if field in data:
+                    modified_fields.append(field)
+
     with Session() as session:
         session.query(Base).filter(Base.base_id == data['base_id']).update(data)
         session.commit()
 
         return jsonify({
             "method":"POST",
-            "acao":f"Atualizar a base de ID {data['base_id']}.",
-            "data":data,
+            "action":"Base atualizada com sucesso!",
+            "modified_fields":modified_fields,
             "current_user":current_user
         })
 
@@ -142,7 +146,6 @@ def remove_base():
 
         return jsonify({
             "method":"POST",
-            "acao":f"Remover a base de ID {data['base_id']}.",
-            "current_user":current_user,
-            "msg":"Base removida com sucesso!"
+            "action":"Base removida com sucesso!",
+            "current_user":current_user
         })

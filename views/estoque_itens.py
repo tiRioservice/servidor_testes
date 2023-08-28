@@ -1,92 +1,146 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import text
+from modules.connection import engine
+from modules.models import Item
+from sqlalchemy.orm import sessionmaker
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 itens_bp = Blueprint("itens", __name__, url_prefix="/itens")
+Session = sessionmaker(bind=engine)
 
-# CRUD #
-# Lista de teste
-lista = [
-    {
-        "id":1,
-        "name": "Test1"
-    },
-    {
-        "id":2,
-        "name": "Test2"
-    },
-    {
-        "id":3,
-        "name": "Test3"
-    },
-]
-
-# Create
+# Create ok
 @itens_bp.post("/inserir")
+@jwt_required()
 def insert_item():
-    lista_length = len(lista)
-    json = request.get_json()
-    if json != {}:
-        if 'name' in json:
-            json['id'] = lista_length + 1
-            lista.append(json)
-            return jsonify({
-                "method":"POST",
-                "acao":f"Inserir um novo item.",
-                "data":json
-            })
-        return jsonify({"msg":"Insira uma chave 'name' ."})
-    return jsonify({"msg":"Insira os dados do novo item a ser cadastrado."})
-
-# Read all
-@itens_bp.get("/listar")
-def get_itens():
-    return jsonify({
-        "method":"GET",
-        "acao":"Listar todos os itens.",
-        "data":lista
-    })
-
-# Read
-@itens_bp.get("/buscar")
-def get_item():
+    current_user = get_jwt_identity()
     data = request.get_json()
+    required_fields = ['categ_id', 'item_nome', 'item_tamanho', 'item_preco']
 
-    if 'id' in data:
-        for register in lista:
-            if register['id'] == data['id']:
-                return jsonify({
-                    "method":"GET",
-                    "acao":f"Buscar o item de ID {data['id']}.",
-                    "data":register
-                })
-        return jsonify({"msg":"Insira um ID valido."})
-    return jsonify({"msg":"Insira um ID."})
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"action":f"Insira uma chave '{field}' e atribua um valor."})
+        
+    if data == {}:
+        return jsonify({"action":"Insira os dados do novo item a ser cadastrado."})
+    
+    with Session() as session:
+        item = Item(**data)
+        session.add(item)
+        session.commit()
 
-# Update
-@itens_bp.post("/atualizar")
-def update_item():
-    data = request.get_json()
-    if 'id' in data:
-        if 'data' in data:
-            for register in lista:
-                if register['id'] == data['id']:
-                    register['name'] = data['data']['name']
-                    return jsonify({
-                        "method":"POST",
-                        "acao":f"Atualizar o item de ID {data['id']}.",
-                        "data":data
-                    })
-        return jsonify({"msg":"Insira os dados."})
-    return jsonify({"msg":"Insira um ID."})
-
-# Remove
-@itens_bp.post("/remover")
-def remove_item():
-    data = request.get_json()
-    if 'id' in data:
-        del lista[data['id'] - 1]
         return jsonify({
-            "method":"POST",
-            "acao":f"Remover o item de ID {data['id']}.",
+            "action":"Item inserido com sucesso!",
+            "item_inserted":True,
+            "new_item_id": item.item_id,
+            "current_user":current_user
         })
-    return jsonify({"msg":"Insira um ID."})
+
+# Read all ok
+@itens_bp.get("/listar")
+@jwt_required()
+def get_itens():
+    current_user = get_jwt_identity()
+    item_list = []
+    with Session() as session:
+        result = session.query(Item).all()
+        for row in result:
+            item_composition = {
+                "registro":row.registro,
+                "item_id":row.item_id,
+                "categ_id":row.categ_id,
+                "item_nome":row.item_nome,
+                "item_tamanho":row.item_tamanho,
+                "item_preco":row.item_preco,
+                "item_qualidade":row.item_qualidade,
+                "item_desc":row.item_desc
+            }
+            item_list.append(item_composition)
+        return jsonify({
+            "method":"GET",
+            "action":"Lista de todos os itens",
+            "item_list":item_list,
+            "current_user":current_user
+        })
+
+# Read ok (GET)
+@itens_bp.get("/buscar/<item_id>")
+@jwt_required()
+def get_item(item_id):
+    current_user = get_jwt_identity()
+    if item_id == None:
+        return jsonify({"action":"Insira um ID de item para realizar a busca."})
+    
+    with Session() as session:
+        result = session.query(Item).filter(Item.item_id == item_id).first()
+        if result == None:
+            return jsonify({"action":"Item não encontrado."})
+        else:
+            item_composition = {
+                "registro":result.registro,
+                "item_id":result.item_id,
+                "categ_id":result.categ_id,
+                "item_nome":result.item_nome,
+                "item_tamanho":result.item_tamanho,
+                "item_preco":result.item_preco,
+                "item_qualidade":result.item_qualidade,
+                "item_desc":result.item_desc
+            }
+            return jsonify({
+                "method":"GET",
+                "action":"Item encontrado com sucesso!",
+                "item":item_composition,
+                "current_user":current_user
+            })
+
+# Update ok
+@itens_bp.post("/atualizar")
+@jwt_required()
+def update_item():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    required_fields = ['item_id']
+    optional_fields = ['categ_id', 'item_nome', 'item_tamanho', 'item_preco', 'item_qualidade', 'item_desc']
+
+    modified_fields = []
+
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"action":f"Insira uma chave '{field}' e atribua um valor."})
+        else:
+            for field in optional_fields:
+                if field in data:
+                    modified_fields.append(field)
+    
+    with Session() as session:
+        session.query(Item).filter(Item.item_id == data['item_id']).update(data)
+        session.commit()
+        return jsonify({
+            "action":"Item atualizado com sucesso!",
+            "item_updated":True,
+            "modified_fields":modified_fields,
+            "current_user":current_user
+        })
+
+# Remove ok
+@itens_bp.post("/remover")
+@jwt_required()
+def remove_item():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    required_fields = ['item_id']
+
+    for field in required_fields:
+        if not field in data:
+            return jsonify({"action":f"Insira uma chave '{field}' e atribua um valor."})
+        
+    if data == {}:
+        return jsonify({"action":"Insira os dados do item a ser removido."})
+    
+    with Session() as session:
+        session.query(Item).filter(Item.item_id == data['item_id']).delete()
+        session.commit()
+        return jsonify({
+            "action":"Item removido com sucesso!",
+            "item_removed":True,
+            "current_user":current_user
+        })

@@ -31,7 +31,7 @@ def insert_nota():
             lista.append(json)
             return jsonify({
                 "method":"POST",
-                "acao":f"Inserir uma nova nota.",
+                "action":f"Inserir uma nova nota.",
                 "data":json
             })
         return jsonify({"msg":"Insira uma chave 'name' ."})
@@ -42,7 +42,7 @@ def insert_nota():
 def get_notas():
     return jsonify({
         "method":"GET",
-        "acao":"Listar todas as notas.",
+        "action":"Listar todas as notas.",
         "data":lista
     })
 
@@ -56,7 +56,7 @@ def get_nota():
             if register['id'] == data['id']:
                 return jsonify({
                     "method":"GET",
-                    "acao":f"Buscar a nota de ID {data['id']}.",
+                    "action":f"Buscar a nota de ID {data['id']}.",
                     "data":register
                 })
         return jsonify({"msg":"Insira um ID valido."})
@@ -73,7 +73,7 @@ def update_nota():
                     register['name'] = data['data']['name']
                     return jsonify({
                         "method":"POST",
-                        "acao":f"Atualizar a nota de ID {data['id']}.",
+                        "action":f"Atualizar a nota de ID {data['id']}.",
                         "data":data
                     })
         return jsonify({"msg":"Insira os dados."})
@@ -87,6 +87,6 @@ def remove_nota():
         del lista[data['id'] - 1]
         return jsonify({
             "method":"POST",
-            "acao":f"Remover a nota de ID {data['id']}.",
+            "action":f"Remover a nota de ID {data['id']}.",
         })
     return jsonify({"msg":"Insira um ID."})

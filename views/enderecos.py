@@ -65,7 +65,7 @@ def get_enderecos():
     
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os enderecos.",
+        "action":"Listar todos os enderecos.",
         "data":lista_enderecos,
         "current_user":current_user
     })
@@ -102,7 +102,7 @@ def get_endereco():
 
         return jsonify({
             "method":"POST",
-            "acao":f"Buscar o endereco de ID {data['end_id']}.",
+            "action":f"Buscar o endereco de ID {data['end_id']}.",
             "endereco":endereco_composition,
             "current_user":current_user
         })
@@ -130,7 +130,7 @@ def get_endereco_id():
 
         return jsonify({
             "method":"GET",
-            "acao":f"Buscar o ID do endereco de cep {data['end_cep']} e numero {data['end_numero']}.",
+            "action":f"Buscar o ID do endereco de cep {data['end_cep']} e numero {data['end_numero']}.",
             "end_id":endereco_composition['end_id'],
             "current_user":current_user
         })
@@ -161,7 +161,7 @@ def update_endereco():
 
         return jsonify({
             "method":"POST",
-            "acao":f"Atualizar o endereco de ID {data['end_id']}.",
+            "action":f"Atualizar o endereco de ID {data['end_id']}.",
             "new_data":new_end,
             "current_user":current_user
         })
@@ -188,5 +188,5 @@ def remove_endereco():
 
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o endereco de ID {data['end_id']}.",
+            "action":f"Remover o endereco de ID {data['end_id']}.",
         })

@@ -25,13 +25,13 @@ def insert_cargo():
     
     with Session() as session:
         cargo = Cargo(**data)
-        result = session.add(cargo)
+        session.add(cargo)
         session.commit()
 
         return jsonify({
-            "msg":"Cargo inserido com sucesso!",
+            "action":"Cargo inserido com sucesso!",
             "cargo_inserted":True,
-            "new_cargo_id": result,
+            "new_cargo_id": cargo.cargo_id,
             "current_user":current_user
         })
 
@@ -58,23 +58,23 @@ def get_cargos():
     
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os cargos.",
+        "action":"Listar todos os cargos.",
         "data":cargo_list,
         "current_user":current_user
     })
 
 # Read ok
-@cargos_bp.get("/buscar")
+@cargos_bp.post("/buscar")
 @jwt_required()
 def get_cargo():
     current_user = get_jwt_identity()
     data = request.get_json()
 
-    if not 'id' in data:
+    if not 'cargo_id' in data:
         return jsonify({"msg":"Insira a chave 'cargo_id' e atribua um valor."})
     
     with Session() as session:
-        result = session.query(Cargo).filter(Cargo.cargo_id == data['id']).first()
+        result = session.query(Cargo).filter(Cargo.cargo_id == data['cargo_id']).first()
         
         cargo_composition = {
             "cargo_id":result.cargo_id,
@@ -83,10 +83,10 @@ def get_cargo():
         }
 
         return jsonify({
-            "method":"GET",
-            "acao":f"Buscar o cargo de ID {data['id']}.",
+            "method":"POST",
+            "action":f"Dados do cargo obtidos.",
             "data":cargo_composition,
-            "logged_user":current_user
+            "current_user":current_user
         })
 
 # Update ok
@@ -105,13 +105,12 @@ def update_cargo():
         return jsonify({"msg":"Insira os dados do novo cargo a ser cadastrado."})
     
     with Session() as session:
-        session.query(Cargo).filter(Cargo.cargo_id == data['cargo_id']).first()
+        session.query(Cargo).filter(Cargo.cargo_id == data['cargo_id']).update(data)
         session.commit()
     
         return jsonify({
             "method":"POST",
-            "acao":f"Atualizar o cargo de ID {data['id']}.",
-            "data":data,
+            "action":f"Cargo atualizado com sucesso!",
             "current_user":current_user
         })
 
@@ -136,6 +135,6 @@ def remove_cargo():
 
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o cargo de ID {data['cargo_id']}.",
+            "action":"Cargo removido com sucesso!",
             "current_user":current_user
         })

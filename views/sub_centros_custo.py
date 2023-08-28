@@ -31,7 +31,7 @@ def insert_sub_centro_custo():
             lista.append(json)
             return jsonify({
                 "method":"POST",
-                "acao":f"Inserir um novo sub centro de custo.",
+                "action":f"Inserir um novo sub centro de custo.",
                 "data":json
             })
         return jsonify({"msg":"Insira uma chave 'name' ."})
@@ -42,7 +42,7 @@ def insert_sub_centro_custo():
 def get_sub_centros_custo():
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os sub centros de custo.",
+        "action":"Listar todos os sub centros de custo.",
         "data":lista
     })
 
@@ -56,7 +56,7 @@ def get_sub_centro_custo():
             if register['id'] == data['id']:
                 return jsonify({
                     "method":"GET",
-                    "acao":f"Buscar o sub centro de custo de ID {data['id']}.",
+                    "action":f"Buscar o sub centro de custo de ID {data['id']}.",
                     "data":register
                 })
         return jsonify({"msg":"Insira um ID valido."})
@@ -73,7 +73,7 @@ def update_sub_centro_custo():
                     register['name'] = data['data']['name']
                     return jsonify({
                         "method":"POST",
-                        "acao":f"Atualizar o sub centro de custo de ID {data['id']}.",
+                        "action":f"Atualizar o sub centro de custo de ID {data['id']}.",
                         "data":data
                     })
         return jsonify({"msg":"Insira os dados."})
@@ -87,6 +87,6 @@ def remove_sub_centro_custo():
         del lista[data['id'] - 1]
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o sub centro custo de ID {data['id']}.",
+            "action":f"Remover o sub centro custo de ID {data['id']}.",
         })
     return jsonify({"msg":"Insira um ID."})

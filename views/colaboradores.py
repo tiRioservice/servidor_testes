@@ -21,18 +21,18 @@ def insert_colaborador():
         
     if data == {}:
         return jsonify({"msg":"Insira os dados do novo colaborador a ser cadastrado."})
-    else:
-        with Session() as session:
-            colaborador = Colaborador(**data)
-            session.add(colaborador)
-            session.commit()
+    
+    with Session() as session:
+        colaborador = Colaborador(**data)
+        session.add(colaborador)
+        session.commit()
 
-            return jsonify({
-                "msg":"Usuário inserido com sucesso!",
-                "colab_inserted":True,
-                "new_colab_id": colaborador.colab_id,
-                "current_user":current_user
-            })
+        return jsonify({
+            "action":"Usuário inserido com sucesso!",
+            "colab_inserted":True,
+            "new_colab_id": colaborador.colab_id,
+            "current_user":current_user
+        })
         
 # Read all ok
 @colaboradores_bp.get("/listar")
@@ -74,7 +74,7 @@ def get_colaboradores():
     
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os colaboradores.",
+        "action":"Listar todos os colaboradores.",
         "data":user_list,
         "current_user":current_user
     })
@@ -121,33 +121,41 @@ def get_colaborador():
             }
 
             return jsonify({
-                "method":"GET",
-                "acao":f"Buscar o colaborador de ID {data['colab_id']}.",
+                "method":"POST",
+                "action":"Colaborador encontrado com sucesso!",
                 "data":colab_composition,
                 "current_user":current_user
             })
             
 # Update ok
 @colaboradores_bp.post("/atualizar")
-# @jwt_required()
+@jwt_required()
 def update_colaborador():
-    # current_user = get_jwt_identity()
+    current_user = get_jwt_identity()
     data = request.get_json()
     required_fields = ['colab_id']
     optional_fields = ['colab_matricula', 'colab_nome', 'colab_nascimento', 'colab_cpf', 'colab_rg', 'colab_est_civil', 'colab_naturalidade', 'colab_fone', 'colab_celular', 'colab_escolaridade', 'colab_admissao', 'colab_email', 'colab_centro_custo', 'colab_salario', 'colab_status', 'end_id', 'cargo_id', 'base_id']
 
-    for field in data:
-        if not field in optional_fields:
-            return jsonify({"msg":f"Chave '{field}' não encontrada."})
+    modified_fields = []
 
     for field in required_fields:
         if not field in data:
             return jsonify({"msg":f"Insira uma chave '{field}' e atribua um valor."})
+        else:
+            for field in optional_fields:
+                if field in data:
+                    modified_fields.append(field)
 
     with Session() as session:
         session.query(Colaborador).filter(Colaborador.colab_id == data['colab_id']).update(data)
         session.commit()
-        return jsonify({"msg":"Colaborador atualizado com sucesso!"})
+
+        return jsonify({
+            "method":"POST",
+            "action":"Colaborador atualizado com sucesso!",
+            "modified_fields":modified_fields,
+            "current_user":current_user
+        })
 
 # Updadate pass ok
 @colaboradores_bp.post("/trocar_senha")
@@ -189,7 +197,7 @@ def remove_colaborador():
         
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o colaborador de ID {data['colab_id']}.",
+            "action":f"Remover o colaborador de ID {data['colab_id']}.",
             "current_user":current_user,
             "msg":"Colaborador removido com sucesso!"
         })

@@ -31,7 +31,7 @@ def insert_cliente():
             lista.append(json)
             return jsonify({
                 "method":"POST",
-                "acao":f"Inserir um novo cliente.",
+                "action":f"Inserir um novo cliente.",
                 "data":json
             })
         return jsonify({"msg":"Insira uma chave 'name' ."})
@@ -42,7 +42,7 @@ def insert_cliente():
 def get_clientes():
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os clientes.",
+        "action":"Listar todos os clientes.",
         "data":lista
     })
 
@@ -56,7 +56,7 @@ def get_cliente():
             if register['id'] == data['id']:
                 return jsonify({
                     "method":"GET",
-                    "acao":f"Buscar o cliente de ID {data['id']}.",
+                    "action":f"Buscar o cliente de ID {data['id']}.",
                     "data":register
                 })
         return jsonify({"msg":"Insira um ID valido."})
@@ -73,7 +73,7 @@ def update_cliente():
                     register['name'] = data['data']['name']
                     return jsonify({
                         "method":"POST",
-                        "acao":f"Atualizar o cliente de ID {data['id']}.",
+                        "action":f"Atualizar o cliente de ID {data['id']}.",
                         "data":data
                     })
         return jsonify({"msg":"Insira os dados."})
@@ -87,6 +87,6 @@ def remove_cliente():
         del lista[data['id'] - 1]
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o cliente de ID {data['id']}.",
+            "action":f"Remover o cliente de ID {data['id']}.",
         })
     return jsonify({"msg":"Insira um ID."})

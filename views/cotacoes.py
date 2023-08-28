@@ -22,7 +22,7 @@ lista = [
 
 # Create
 @cotacoes_bp.post("/inserir")
-def insert_cotacao():
+def insert_cotaction():
     lista_length = len(lista)
     json = request.get_json()
     if json != {}:
@@ -31,24 +31,24 @@ def insert_cotacao():
             lista.append(json)
             return jsonify({
                 "method":"POST",
-                "acao":f"Inserir uma nova cotacao.",
+                "action":f"Inserir uma nova cotaction.",
                 "data":json
             })
         return jsonify({"msg":"Insira uma chave 'name' ."})
-    return jsonify({"msg":"Insira os dados da novo cotacao a ser cadastrada."})
+    return jsonify({"msg":"Insira os dados da novo cotaction a ser cadastrada."})
 
 # Read all
 @cotacoes_bp.get("/listar")
 def get_cotacoes():
     return jsonify({
         "method":"GET",
-        "acao":"Listar todas as cotacoes.",
+        "action":"Listar todas as cotacoes.",
         "data":lista
     })
 
 # Read
 @cotacoes_bp.get("/buscar")
-def get_cotacao():
+def get_cotaction():
     data = request.get_json()
 
     if 'id' in data:
@@ -56,7 +56,7 @@ def get_cotacao():
             if register['id'] == data['id']:
                 return jsonify({
                     "method":"GET",
-                    "acao":f"Buscar a cotacao de ID {data['id']}.",
+                    "action":f"Buscar a cotaction de ID {data['id']}.",
                     "data":register
                 })
         return jsonify({"msg":"Insira um ID valido."})
@@ -64,7 +64,7 @@ def get_cotacao():
 
 # Update
 @cotacoes_bp.post("/atualizar")
-def update_cotacao():
+def update_cotaction():
     data = request.get_json()
     if 'id' in data:
         if 'data' in data:
@@ -73,7 +73,7 @@ def update_cotacao():
                     register['name'] = data['data']['name']
                     return jsonify({
                         "method":"POST",
-                        "acao":f"Atualizar a cotacao de ID {data['id']}.",
+                        "action":f"Atualizar a cotaction de ID {data['id']}.",
                         "data":data
                     })
         return jsonify({"msg":"Insira os dados."})
@@ -81,12 +81,12 @@ def update_cotacao():
 
 # Remove
 @cotacoes_bp.post("/remover")
-def remove_cotacao():
+def remove_cotaction():
     data = request.get_json()
     if 'id' in data:
         del lista[data['id'] - 1]
         return jsonify({
             "method":"POST",
-            "acao":f"Remover a cotacao de ID {data['id']}.",
+            "action":f"Remover a cotaction de ID {data['id']}.",
         })
     return jsonify({"msg":"Insira um ID."})

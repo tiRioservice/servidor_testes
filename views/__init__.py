@@ -1,5 +1,5 @@
 from .bases import bases_bp
-from .cargo_acessos import cargo_acessos_bp
+from .cargo_config import cargo_config_bp
 from .cargos import cargos_bp
 from .centros_custo import centros_custo_bp
 from .clientes import clientes_bp

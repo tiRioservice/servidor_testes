@@ -31,7 +31,7 @@ def insert_tipo_documento():
             lista.append(json)
             return jsonify({
                 "method":"POST",
-                "acao":f"Inserir um novo tipo de documento.",
+                "action":f"Inserir um novo tipo de documento.",
                 "data":json
             })
         return jsonify({"msg":"Insira uma chave 'name' ."})
@@ -42,7 +42,7 @@ def insert_tipo_documento():
 def get_tipos_documento():
     return jsonify({
         "method":"GET",
-        "acao":"Listar todos os tipos de documento.",
+        "action":"Listar todos os tipos de documento.",
         "data":lista
     })
 
@@ -56,7 +56,7 @@ def get_tipo_documento():
             if register['id'] == data['id']:
                 return jsonify({
                     "method":"GET",
-                    "acao":f"Buscar o tipo de documento de ID {data['id']}.",
+                    "action":f"Buscar o tipo de documento de ID {data['id']}.",
                     "data":register
                 })
         return jsonify({"msg":"Insira um ID valido."})
@@ -73,7 +73,7 @@ def update_tipo_documento():
                     register['name'] = data['data']['name']
                     return jsonify({
                         "method":"POST",
-                        "acao":f"Atualizar o tipo de documento de ID {data['id']}.",
+                        "action":f"Atualizar o tipo de documento de ID {data['id']}.",
                         "data":data
                     })
         return jsonify({"msg":"Insira os dados."})
@@ -87,6 +87,6 @@ def remove_tipo_documento():
         del lista[data['id'] - 1]
         return jsonify({
             "method":"POST",
-            "acao":f"Remover o tipo de documento de ID {data['id']}.",
+            "action":f"Remover o tipo de documento de ID {data['id']}.",
         })
     return jsonify({"msg":"Insira um ID."})

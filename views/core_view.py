@@ -11,7 +11,8 @@ from .centros_custo import centros_custo_bp
 from .sub_centros_custo import sub_centros_custo_bp
 from .clientes import clientes_bp
 from .tipos_documento import tipos_documento_bp
-from .cargo_acessos import cargo_acessos_bp
+from .cargo_config import cargo_config_bp
+from .permissao import permissoes_bp
 from modules.auth import auth_bp
 
 # criação das Blueprints da API: app e v2
@@ -35,7 +36,8 @@ v2_bp.register_blueprint(estoque_bp)
 v2_bp.register_blueprint(centros_custo_bp)
 v2_bp.register_blueprint(sub_centros_custo_bp)
 v2_bp.register_blueprint(tipos_documento_bp)
-v2_bp.register_blueprint(cargo_acessos_bp)
+v2_bp.register_blueprint(cargo_config_bp)
+v2_bp.register_blueprint(permissoes_bp)
 v2_bp.register_blueprint(clientes_bp)
 
 @app_bp.get("/data")
