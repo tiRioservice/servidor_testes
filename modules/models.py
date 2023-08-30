@@ -113,9 +113,9 @@ class Cotacao(DBase):
      registro = Column(DateTime(timezone=True), server_default=func.now())
      cot_id: Mapped[int] = mapped_column(primary_key=True)
      colab_id: Mapped[int] = mapped_column(Integer, nullable=False)
-     cot_valid: Mapped[str] = mapped_column(String(12), nullable=True)
-     cot_status: Mapped[int] = mapped_column(Integer, nullable=True)
-     cot_val_total: Mapped[float] = mapped_column(Float, nullable=True)
+     cot_valid: Mapped[str] = mapped_column(String(12), nullable=False)
+     cot_status: Mapped[int] = mapped_column(Integer, nullable=False)
+     cot_val_total: Mapped[float] = mapped_column(Float, nullable=False)
 
      def __repr__(self) -> str:
           return f"Cotacao -> (cot_id={self.cot_id!r}, colab_id={self.colab_id!r}, cot_status={self.cot_status!r})"

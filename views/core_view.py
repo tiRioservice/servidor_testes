@@ -13,6 +13,9 @@ from .clientes import clientes_bp
 from .tipos_documento import tipos_documento_bp
 from .cargo_config import cargo_config_bp
 from .permissao import permissoes_bp
+from .rel_item_forn import rel_item_forn_bp
+from .cot_lista_itens import cot_lista_itens_bp
+from .cot_lista_forn import cot_lista_forn_bp
 from modules.auth import auth_bp
 
 # criação das Blueprints da API: app e v2
@@ -38,6 +41,9 @@ v2_bp.register_blueprint(sub_centros_custo_bp)
 v2_bp.register_blueprint(tipos_documento_bp)
 v2_bp.register_blueprint(cargo_config_bp)
 v2_bp.register_blueprint(permissoes_bp)
+v2_bp.register_blueprint(rel_item_forn_bp)
+v2_bp.register_blueprint(cot_lista_itens_bp)
+v2_bp.register_blueprint(cot_lista_forn_bp)
 v2_bp.register_blueprint(clientes_bp)
 
 @app_bp.get("/data")
@@ -48,6 +54,6 @@ def get_data() -> Response:
         "api_dev_start_date":"09/07/2023",
         "api_author":"Forjatech Soluções Tecnológicas (Thyéz de Oliveira Monteiro)",
         "api_author_email":"thyezoliveira.homeoffice@gmail.com",
-        "api_description":"API central da Rio Services. Esta API provê recursos computacionais de alta performance e escalabilidade para operaçoes de recolhimento, armazenamento e proteção adequados dos dados sensiveis da empresa."
+        "api_description":"API central da Rio Services. Esta API provê recursos computacionais de alta performance e escalabilidade para execução operações de recolhimento, armazenamento e proteção adequada de dados de gestão."
     }
     return jsonify(data)
